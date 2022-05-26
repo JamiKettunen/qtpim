@@ -88,9 +88,15 @@ void QVersitDocumentWriter::setCodec(QTextCodec *codec)
     if (mEncoder)
         delete mEncoder;
     mCodec = codec;
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+    mEncoder = codec->makeEncoder();
+    if (mCodec->name() == "UTF-8")
+        mEncoder->fromUnicode(QString()); // Throw away BOM.
+#else
     mEncoder = codec->makeEncoder(mCodec->name() == QByteArrayLiteral("UTF-8")
                 ? QStringConverterBase::Flag::Default
                 : QStringConverterBase::Flag::WriteBom);
+#endif
 
     // UTF-(16|32)(LE|BE) are the only codecs where characters in the base64 range aren't encoded
     // the same as in ASCII.  For ASCII compatible codecs, we can do some optimizations.

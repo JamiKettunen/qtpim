@@ -1851,9 +1851,13 @@ void tst_QVersitReader::testReadLine()
     QFETCH(QList<QString>, expectedLines);
 
     QTextCodec* codec = QTextCodec::codecForName(codecName);
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+    QTextEncoder* encoder = codec->makeEncoder();
+#else
     QTextEncoder* encoder = codec->makeEncoder(codecName == QStringLiteral("UTF-8")
                                                ? QStringConverterBase::Flag::Default
                                                : QStringConverterBase::Flag::WriteBom);
+#endif
     encoder->fromUnicode(QStringLiteral("ignore BOM")); // Throw away BOM.
 
     QByteArray bytes(encoder->fromUnicode(data));

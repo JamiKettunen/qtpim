@@ -61,7 +61,12 @@ QTextEncoder* QVCard21Writer::utf8Encoder()
     static QTextEncoder* encoder = 0;
     if (encoder == 0) {
         // prevent output of byte order mark for UTF-8 encoding
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+        encoder = QTextCodec::codecForName("UTF-8")->makeEncoder();
+        encoder->fromUnicode(QString());
+#else
         encoder = QTextCodec::codecForName("UTF-8")->makeEncoder(QStringConverterBase::Flag::Default);
+#endif
     }
     return encoder;
 }
