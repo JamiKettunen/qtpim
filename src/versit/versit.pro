@@ -1,5 +1,6 @@
 TARGET = QtVersit
-QT = core contacts core5compat
+QT = core contacts
+greaterThan(QT_MAJOR_VERSION, 5): QT += core5compat
 
 MODULE_PLUGIN_TYPES = \
     versit
