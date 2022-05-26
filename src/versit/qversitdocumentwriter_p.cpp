@@ -231,7 +231,7 @@ void QVersitDocumentWriter::writeString(const QString &value)
         // Write the first "spaceRemaining" characters
         QStringView line(value.constData() + charsWritten, spaceRemaining);
         charsWritten += spaceRemaining;
-        const QByteArray encodedLine = mEncoder->fromUnicode(line.constData(), line.length());
+        const QByteArray encodedLine = mEncoder->fromUnicode(line.data(), line.length());
         const QByteArray encodedCrlfSpace = mEncoder->fromUnicode(crlfSpace);
         if (mDevice->write(encodedLine) < 0 || mDevice->write(encodedCrlfSpace) < 0)
             mSuccessful = false;
@@ -267,7 +267,7 @@ void QVersitDocumentWriter::writeStringQp(const QString &value)
         QStringView line(value.constData() + charsWritten, spaceRemaining);
 
         charsWritten += spaceRemaining;
-        if (mDevice->write(mEncoder->fromUnicode(line.constData(), line.length())) < 0
+        if (mDevice->write(mEncoder->fromUnicode(line.data(), line.length())) < 0
                || mDevice->write(mEncoder->fromUnicode(softBreak)) < 0)
             mSuccessful = false;
         spaceRemaining = MAX_LINE_LENGTH - 1; // minus 1 for the equals required at the end
